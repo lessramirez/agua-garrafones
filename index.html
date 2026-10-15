@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruta de Garrafones</title>
+<meta name="theme-color" content="#0a6a86">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Garrafones">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app de una columna para celular — encabezado fijo, contenido en tarjetas, barra de pestañas abajo, hojas que suben para capturar */
+:root{
+  --bg:#edf3f5; --surface:#ffffff; --surface-2:#f5f9fa; --ink:#0d2530; --muted:#5a7280; --line:#d3e1e6;
+  --accent:#0a6a86; --accent-ink:#ffffff; --accent-soft:#dbedf2;
+  --ok:#1d8656; --ok-soft:#dcf1e6; --warn:#a96d12; --warn-soft:#f8ecd6; --danger:#bf3d37; --danger-soft:#f8e1df;
+  --wa:#1f9d55;
+  --f-display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a181e; --surface:#11252d; --surface-2:#0e2027; --ink:#e2eef2; --muted:#8aa3ad; --line:#21404b;
+  --accent:#4bb2cf; --accent-ink:#04212b; --accent-soft:#15384a;
+  --ok:#4fc48d; --ok-soft:#143a2a; --warn:#e2a74c; --warn-soft:#3b2d14; --danger:#ef7d75; --danger-soft:#43201e;
+  --wa:#4fc48d; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0a181e; --surface:#11252d; --surface-2:#0e2027; --ink:#e2eef2; --muted:#8aa3ad; --line:#21404b;
+  --accent:#4bb2cf; --accent-ink:#04212b; --accent-soft:#15384a;
+  --ok:#4fc48d; --ok-soft:#143a2a; --warn:#e2a74c; --warn-soft:#3b2d14; --danger:#ef7d75; --danger-soft:#43201e;
+  --wa:#4fc48d; color-scheme:dark }
+
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme: dark){:root{color-scheme:dark}}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0;-webkit-tap-highlight-color:transparent;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .wrap{padding-block:12px;display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:11px;background:var(--accent);display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px}
+.brand{min-width:0;flex:1}
+.brand h1{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.demo-chip{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:var(--warn-soft);color:var(--warn);border:0;cursor:pointer;flex:none}
+.gear{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted);flex:none}
+.gear svg{width:20px;height:20px}
+.welcome{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}
+.welcome h2{font-size:22px}
+.welcome p{margin:0;color:var(--muted)}
+.welcome ol{margin:0;padding-left:20px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.note{font-size:13px;color:var(--muted);margin:0}
+.note.warn{color:var(--warn)}
+
+main{padding-block:16px calc(96px + env(safe-area-inset-bottom,0px))}
+section.view{display:flex;flex-direction:column;gap:18px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.sec-head h2{font-size:17px;font-weight:600}
+.sec-head .count{color:var(--muted);font-size:13px}
+.list{display:flex;flex-direction:column;gap:10px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.stat b{display:block;font-family:var(--f-display);font-size:24px;font-weight:700;line-height:1.1}
+.stat span{font-size:12px;color:var(--muted)}
+.stat.accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.stat.accent span{color:var(--accent-ink);opacity:.85}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px;align-items:flex-start}
+.qty{flex:none;width:54px;border-radius:12px;background:var(--accent-soft);color:var(--accent);text-align:center;padding:7px 0 6px}
+.qty b{display:block;font-family:var(--f-display);font-size:24px;line-height:1;font-weight:700}
+.qty small{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.info{min-width:0;flex:1}
+.info h3{font-size:16px;font-weight:600;line-height:1.25}
+.info p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.tag{font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.tag.debt{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.tag.due{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.tag.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 12px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);min-height:40px}
+.btn svg{width:16px;height:16px;flex:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);margin-left:auto}
+.btn.wa{color:var(--wa)}
+.btn.block{width:100%;justify-content:center;margin-left:0}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.seg button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn:active{transform:translateY(1px)}
+
+.done{opacity:.7}
+.done .qty{background:var(--ok-soft);color:var(--ok)}
+.empty{text-align:center;color:var(--muted);padding:22px 12px;border:1px dashed var(--line);border-radius:var(--r);font-size:14px}
+
+.search{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.cl-item{cursor:pointer;text-align:left;width:100%}
+.cl-meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted)}
+.big-total{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.big-total span{color:var(--muted);font-size:13px}
+.big-total b{display:block;font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--danger);line-height:1.1}
+
+.chart-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.chart-card svg{width:100%;height:auto;display:block}
+.bar{fill:var(--accent-soft)}
+.bar.today{fill:var(--accent)}
+.lbl{fill:var(--muted);font-size:11px;font-family:var(--f-body)}
+.val{fill:var(--ink);font-size:12px;font-weight:700;font-family:var(--f-body)}
+.grid-line{stroke:var(--line);stroke-width:1}
+.kv{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);gap:12px}
+.kv:last-child{border-bottom:0}
+.kv span{color:var(--muted)}
+.kv b{font-weight:600}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{border:0;background:none;padding:9px 0 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;position:relative}
+.tab svg{width:22px;height:22px}
+.tab[aria-current="page"]{color:var(--accent)}
+.tab .dot{position:absolute;top:5px;left:calc(50% + 8px);min-width:17px;height:17px;border-radius:9px;background:var(--danger);color:#fff;font-size:10px;display:grid;place-items:center;padding:0 4px}
+
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:6;border:0;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:13px 18px;font-weight:700;display:flex;gap:6px;align-items:center;box-shadow:0 6px 18px rgba(4,40,52,.25);cursor:pointer}
+.fab svg{width:18px;height:18px}
+
+.scrim{position:fixed;inset:0;background:rgba(5,20,26,.45);z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;max-height:88%;overflow-y:auto;padding:8px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:4px auto 12px}
+.sheet h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.sheet .sub{color:var(--muted);margin:0 0 14px;font-size:14px}
+.form{display:flex;flex-direction:column;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-size:22px;font-weight:600;cursor:pointer}
+.stepper input{text-align:center;font-family:var(--f-display);font-size:22px;font-weight:700;flex:1;min-width:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg button{border:0;background:none;padding:10px;border-radius:9px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.total-line{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
+.total-line b{font-family:var(--f-display);font-size:24px}
+.hist{font-size:14px}
+.hist .kv{padding:8px 0}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+</style>
+
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5s6.5 7.3 6.5 12a6.5 6.5 0 0 1-13 0c0-4.7 6.5-12 6.5-12z"/></svg></div>
+  <div class="brand"><h1>Agua Purificada</h1><p id="today-label"></p></div>
+  <button class="demo-chip" id="demo-chip" type="button" title="Estás viendo datos de ejemplo" hidden>Ejemplo</button>
+  <button class="gear" id="gear" type="button" aria-label="Ajustes y respaldo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+</div></header>
+
+<main class="wrap" id="main"></main>
+
+<button class="fab" id="fab" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="fab-label">Pedido</span></button>
+
+<nav class="tabs" aria-label="Secciones"><div class="wrap">
+  <button class="tab" data-tab="hoy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Ruta de hoy</button>
+  <button class="tab" data-tab="clientes" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Clientes</button>
+  <button class="tab" data-tab="cobros" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg>Cobros<span class="dot" id="debt-dot" hidden></span></button>
+  <button class="tab" data-tab="resumen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9M3 20h18"/></svg>Resumen</button>
+</div></nav>
+
+<div id="sheet-root"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const KEY='rutaGarrafones.app.v1';
+const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)};
+const TODAY=iso(new Date());
+const addDays=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return iso(d)};
+const diff=(a,b)=>Math.round((new Date(a+'T12:00:00')-new Date(b+'T12:00:00'))/86400000);
+const money=n=>'$'+Math.round(n).toLocaleString('es-MX');
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDay=(s,opt)=>new Date(s+'T12:00:00').toLocaleDateString('es-MX',opt);
+
+const ICON={
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>',
+  wa:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 2 2 3.9 4.3 4.6l1.2-1.1 1.8.9-.4 1.6c-3.4.2-7.2-3.3-7.3-6.6L10.2 8l1 1.7z"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'
+};
+
+function seed(){
+  // [nombre, tipo, tel, dirección, precio, cada N días, cantidad usual, días desde la última entrega, envases prestados, notas]
+  const R=[
+    ['Tortillería La Esperanza','negocio','55 1234 5601','Av. Hidalgo 214, Col. Centro',30,3,6,0,6,'Dejar atrás, por el portón'],
+    ['Abarrotes Don Chuy','negocio','55 1234 5602','Calle Morelos 88, Col. Obrera',30,4,5,5,5,''],
+    ['Taller Mecánico Ramírez','negocio','55 1234 5603','Carretera Nacional km 3',32,7,2,2,2,''],
+    ['Sra. Lupita Hernández','casa','55 1234 5604','Privada Los Pinos 12',35,7,2,7,2,'Casa azul, tocar fuerte'],
+    ['Escuela Primaria Benito Juárez','negocio','55 1234 5605','Calle 5 de Mayo s/n',28,5,10,1,10,'Entregar con el conserje antes de las 12'],
+    ['Consultorio Dra. Maribel Cruz','negocio','55 1234 5606','Av. Universidad 410, local 3',32,7,3,8,3,''],
+    ['Familia Torres','casa','55 1234 5607','Calle Encino 27, Fracc. Las Flores',35,10,1,4,1,''],
+    ['Cocina Económica Doña Mary','negocio','55 1234 5608','Mercado Municipal, local 14',30,3,8,3,8,'Pagan los viernes']
+  ];
+  const debtors={1:1,4:1,7:1};
+  const clients=[],orders=[];
+  R.forEach((r,i)=>{
+    const c={id:'c'+i,name:r[0],type:r[1],phone:r[2],address:r[3],price:r[4],freq:r[5],typical:r[6],envases:r[8],debt:0,notes:r[9]};
+    clients.push(c);
+    let first=true;
+    for(let d=r[7];d<=21;d+=r[5]){
+      const qty=first?r[6]:Math.max(1,r[6]+((d*7+i)%3===0?1:0)-((d+i)%5===0?1:0));
+      const unpaid=first&&debtors[i];
+      orders.push({id:uid(),clientId:c.id,qty,date:addDays(TODAY,-d),status:'entregado',paid:!unpaid,amount:qty*c.price,returned:qty});
+      if(unpaid)c.debt+=qty*c.price;
+      first=false;
+    }
+  });
+  ['c1','c3','c7'].forEach(id=>{const c=clients.find(x=>x.id===id);orders.push({id:uid(),clientId:id,qty:c.typical,date:TODAY,status:'pendiente'})});
+  return {clients,orders,payments:[],demo:true};
+}
+
+let S=null;
+try{const raw=localStorage.getItem(KEY);if(raw)S=JSON.parse(raw)}catch(e){}
+if(!S||!S.clients)S={clients:[],orders:[],payments:[],demo:false};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+const client=id=>S.clients.find(c=>c.id===id);
+const lastDelivery=c=>S.orders.filter(o=>o.clientId===c.id&&o.status==='entregado').reduce((m,o)=>o.date>m?o.date:m,'');
+const nextDue=c=>{const l=lastDelivery(c);return l?addDays(l,c.freq):TODAY};
+const pendingFor=c=>S.orders.find(o=>o.clientId===c.id&&o.status==='pendiente');
+const cobradoEn=day=>S.orders.filter(o=>o.status==='entregado'&&o.paid&&o.date===day).reduce((s,o)=>s+o.amount,0)+S.payments.filter(p=>p.date===day).reduce((s,p)=>s+p.amount,0);
+const digits=p=>String(p||'').replace(/\D/g,'');
+const waLink=(c,msg)=>'https://wa.me/52'+digits(c.phone)+'?text='+encodeURIComponent(msg);
+const mapLink=c=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.address);
+
+let tab='hoy',query='';
+const main=document.getElementById('main');
+{const t=fmtDay(TODAY,{weekday:'long',day:'numeric',month:'long'});document.getElementById('today-label').textContent=t[0].toUpperCase()+t.slice(1);}
+
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
+
+function render(){
+  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
+  const debtors=S.clients.filter(c=>c.debt>0).length;
+  const dot=document.getElementById('debt-dot');dot.hidden=!debtors;dot.textContent=debtors;
+  document.getElementById('fab-label').textContent=tab==='clientes'?'Cliente':'Pedido';
+  document.getElementById('fab').hidden=tab==='resumen'||tab==='cobros'||(!S.clients.length&&tab==='hoy');
+  document.getElementById('demo-chip').hidden=!S.demo;
+  if(!S.clients.length&&tab!=='clientes'){renderWelcome();return}
+  ({hoy:renderHoy,clientes:renderClientes,cobros:renderCobros,resumen:renderResumen})[tab]();
+}
+
+function renderWelcome(){
+  main.innerHTML=`<section class="view"><div class="welcome">
+    <h2>Bienvenido a tu ruta</h2>
+    <p>Aquí vas a llevar tus entregas, los garrafones que tiene cada cliente y quién te debe.</p>
+    <ol><li>Agrega a tus clientes fijos con su precio y cada cuándo piden.</li><li>Cada mañana arma la ruta del día.</li><li>Al entregar, marca cuántos dejaste y si te pagaron.</li></ol>
+    <button class="btn primary block" type="button" id="w-add">${ICON.plus}Agregar mi primer cliente</button>
+    <button class="btn block" type="button" id="w-demo">Ver cómo funciona con datos de ejemplo</button>
+  </div></section>`;
+  document.getElementById('w-add').addEventListener('click',()=>sheetCliente());
+  document.getElementById('w-demo').addEventListener('click',()=>{S=seed();save();render();toast('Cargué clientes de ejemplo')});
+}
+
+function clientActions(c,extra){
+  return `<a class="btn" href="${mapLink(c)}" target="_blank" rel="noopener">${ICON.map}Mapa</a>`+
+    `<a class="btn wa" href="${waLink(c,extra.msg)}" target="_blank" rel="noopener">${ICON.wa}WhatsApp</a>`+(extra.primary||'');
+}
+
+function renderHoy(){
+  const pend=S.orders.filter(o=>o.status==='pendiente');
+  const done=S.orders.filter(o=>o.status==='entregado'&&o.date===TODAY);
+  const due=S.clients.filter(c=>!pendingFor(c)&&nextDue(c)<=TODAY&&lastDelivery(c)!==TODAY).sort((a,b)=>nextDue(a).localeCompare(nextDue(b)));
+  const totalPend=pend.reduce((s,o)=>s+o.qty,0);
+  main.innerHTML=`<section class="view">
+    <div class="stats">
+      <div class="stat accent"><b>${totalPend}</b><span>garrafones por entregar</span></div>
+      <div class="stat"><b>${pend.length}</b><span>paradas pendientes</span></div>
+      <div class="stat"><b>${money(cobradoEn(TODAY))}</b><span>cobrado hoy</span></div>
+    </div>
+    <div class="sec-head"><h2>Por entregar</h2><span class="count">${pend.length} ${pend.length===1?'parada':'paradas'}</span></div>
+    <div class="list">${pend.length?pend.map(o=>{const c=client(o.clientId);return `<article class="card">
+      <div class="row"><div class="qty"><b>${o.qty}</b><small>garraf.</small></div>
+      <div class="info"><h3>${esc(c.name)}</h3><p>${esc(c.address)}</p>
+      <div class="tags">${c.envases?`<span class="tag">${c.envases} envases suyos</span>`:''}${c.debt?`<span class="tag debt">Debe ${money(c.debt)}</span>`:''}${c.notes?`<span class="tag">${esc(c.notes)}</span>`:''}</div></div></div>
+      <div class="actions">${clientActions(c,{msg:`Hola, voy en camino con sus ${o.qty} garrafones de agua. 💧`,primary:`<button class="btn primary" data-act="entregar" data-id="${o.id}" type="button">${ICON.check}Entregar</button>`})}</div>
+    </article>`}).join(''):`<div class="empty">No hay entregas pendientes. Agrega un pedido con el botón de abajo o desde "Ya les toca".</div>`}</div>
+
+    <div class="sec-head"><h2>Ya les toca</h2><span class="count">según cada cuándo piden</span></div>
+    <div class="list">${due.length?due.map(c=>{const late=diff(TODAY,nextDue(c));return `<article class="card">
+      <div class="row"><div class="qty" style="background:var(--warn-soft);color:var(--warn)"><b>${c.typical}</b><small>usual</small></div>
+      <div class="info"><h3>${esc(c.name)}</h3><p>Pide cada ${c.freq} días · última vez ${fmtDay(lastDelivery(c),{day:'numeric',month:'short'})}</p>
+      <div class="tags"><span class="tag due">${late===0?'Le toca hoy':`Atrasado ${late} ${late===1?'día':'días'}`}</span></div></div></div>
+      <div class="actions"><a class="btn wa" href="${waLink(c,`Hola, buen día. ¿Le llevamos sus ${c.typical} garrafones de agua hoy? 💧`)}" target="_blank" rel="noopener">${ICON.wa}Preguntar</a>
+      <button class="btn primary" data-act="add-route" data-id="${c.id}" type="button">${ICON.plus}Agregar a la ruta</button></div>
+    </article>`}).join(''):`<div class="empty">Ningún cliente atrasado. Todos tienen agua.</div>`}</div>
+
+    ${done.length?`<div class="sec-head"><h2>Entregados hoy</h2><span class="count">${done.reduce((s,o)=>s+o.qty,0)} garrafones</span></div>
+    <div class="list">${done.map(o=>{const c=client(o.clientId);return `<article class="card done"><div class="row"><div class="qty"><b>${o.qty}</b><small>listo</small></div>
+      <div class="info"><h3>${esc(c.name)}</h3><div class="tags"><span class="tag ${o.paid?'ok':'debt'}">${o.paid?'Pagó '+money(o.amount):'Fiado '+money(o.amount)}</span></div></div></div></article>`}).join('')}</div>`:''}
+  </section>`;
+}
+
+function renderClientes(){
+  const q=query.toLowerCase();
+  const list=S.clients.filter(c=>!q||c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  const envTotal=S.clients.reduce((s,c)=>s+c.envases,0);
+  main.innerHTML=`<section class="view">
+    <input class="search" id="search" type="search" placeholder="Buscar cliente o dirección" value="${esc(query)}" aria-label="Buscar cliente">
+    <div class="sec-head"><h2>${S.clients.length} clientes</h2><span class="count">${envTotal} envases prestados en total</span></div>
+    <div class="list">${list.map(c=>{const nd=nextDue(c),d=diff(nd,TODAY);return `<button class="card cl-item" data-act="client" data-id="${c.id}" type="button">
+      <div class="info"><h3>${esc(c.name)}</h3><p>${esc(c.address)}</p>
+      <div class="tags"><span class="tag">${c.type==='negocio'?'Negocio':'Casa'}</span><span class="tag">${c.envases} envases</span>${c.debt?`<span class="tag debt">Debe ${money(c.debt)}</span>`:''}${pendingFor(c)?'<span class="tag ok">En ruta hoy</span>':d<=0?'<span class="tag due">Ya le toca</span>':''}</div></div>
+      <div class="cl-meta"><span>${money(c.price)} por garrafón · cada ${c.freq} días</span><span>${d>0?`en ${d} ${d===1?'día':'días'}`:''}</span></div>
+    </button>`}).join('')||`<div class="empty">${S.clients.length?'No encontré clientes con esa búsqueda.':'Todavía no tienes clientes. Toca <b>Cliente</b> abajo para agregar el primero.'}</div>`}</div>
+  </section>`;
+  const s=document.getElementById('search');
+  s.addEventListener('input',e=>{query=e.target.value;const pos=s.selectionStart;renderClientes();const n=document.getElementById('search');n.focus();n.setSelectionRange(pos,pos)});
+}
+
+function renderCobros(){
+  const list=S.clients.filter(c=>c.debt>0).sort((a,b)=>b.debt-a.debt);
+  const total=list.reduce((s,c)=>s+c.debt,0);
+  const recent=S.payments.slice(-5).reverse();
+  main.innerHTML=`<section class="view">
+    <div class="big-total"><span>Total por cobrar</span><b>${money(total)}</b><span>${list.length} ${list.length===1?'cliente debe':'clientes deben'}</span></div>
+    <div class="list">${list.length?list.map(c=>`<article class="card"><div class="row"><div class="info"><h3>${esc(c.name)}</h3><p>Última entrega ${fmtDay(lastDelivery(c),{day:'numeric',month:'short'})}${c.notes?' · '+esc(c.notes):''}</p></div>
+      <b style="font-family:var(--f-display);font-size:20px;color:var(--danger)">${money(c.debt)}</b></div>
+      <div class="actions"><a class="btn wa" href="${waLink(c,`Hola, buen día. Le recuerdo su saldo pendiente de ${money(c.debt)} por el agua. ¡Gracias!`)}" target="_blank" rel="noopener">${ICON.wa}Recordar</a>
+      <button class="btn primary" data-act="abono" data-id="${c.id}" type="button">Registrar pago</button></div></article>`).join(''):'<div class="empty">Nadie debe nada. 👌</div>'}</div>
+    ${recent.length?`<div class="sec-head"><h2>Pagos recientes</h2></div><div class="card hist">${recent.map(p=>`<div class="kv"><span>${esc(client(p.clientId).name)} · ${fmtDay(p.date,{day:'numeric',month:'short'})}</span><b>${money(p.amount)}</b></div>`).join('')}</div>`:''}
+  </section>`;
+}
+
+function renderResumen(){
+  const days=[...Array(7)].map((_,i)=>addDays(TODAY,i-6));
+  const delivered=S.orders.filter(o=>o.status==='entregado');
+  const per=days.map(d=>delivered.filter(o=>o.date===d).reduce((s,o)=>s+o.qty,0));
+  const week=delivered.filter(o=>o.date>=days[0]);
+  const garr=week.reduce((s,o)=>s+o.qty,0);
+  const cobrado=days.reduce((s,d)=>s+cobradoEn(d),0);
+  const fiado=week.filter(o=>!o.paid).reduce((s,o)=>s+o.amount,0);
+  const max=Math.max(...per,1), top=Math.ceil(max/5)*5||5;
+  const W=330,H=170,pl=8,pr=8,pt=22,pb=26,bw=(W-pl-pr)/7;
+  const y=v=>pt+(H-pt-pb)*(1-v/top);
+  const bars=per.map((v,i)=>{const x=pl+i*bw+bw*.18,w=bw*.64,yy=y(v);return `<rect class="bar ${days[i]===TODAY?'today':''}" x="${x.toFixed(1)}" y="${yy.toFixed(1)}" width="${w.toFixed(1)}" height="${(H-pb-yy).toFixed(1)}" rx="5"/>
+    <text class="val" x="${(x+w/2).toFixed(1)}" y="${(yy-6).toFixed(1)}" text-anchor="middle">${v}</text>
+    <text class="lbl" x="${(x+w/2).toFixed(1)}" y="${H-8}" text-anchor="middle">${days[i]===TODAY?'hoy':fmtDay(days[i],{weekday:'short'}).replace('.','')}</text>`}).join('');
+  const byClient=S.clients.map(c=>({c,n:week.filter(o=>o.clientId===c.id).reduce((s,o)=>s+o.qty,0)})).filter(x=>x.n).sort((a,b)=>b.n-a.n).slice(0,5);
+  main.innerHTML=`<section class="view">
+    <div class="stats">
+      <div class="stat accent"><b>${garr}</b><span>garrafones en 7 días</span></div>
+      <div class="stat"><b>${money(cobrado)}</b><span>cobrado</span></div>
+      <div class="stat"><b>${money(fiado)}</b><span>fiado</span></div>
+    </div>
+    <div class="chart-card"><div class="sec-head" style="margin-bottom:8px"><h2>Garrafones por día</h2><span class="count">últimos 7 días</span></div>
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Garrafones entregados por día en los últimos 7 días"><line class="grid-line" x1="${pl}" x2="${W-pr}" y1="${H-pb}" y2="${H-pb}"/>${bars}</svg></div>
+    <div class="card"><div class="sec-head"><h2>Cómo va el negocio</h2></div><div class="hist">
+      <div class="kv"><span>Envases prestados con clientes</span><b>${S.clients.reduce((s,c)=>s+c.envases,0)}</b></div>
+      <div class="kv"><span>Total por cobrar</span><b style="color:var(--danger)">${money(S.clients.reduce((s,c)=>s+c.debt,0))}</b></div>
+      <div class="kv"><span>Promedio por día</span><b>${(garr/7).toFixed(1)} garrafones</b></div>
+      <div class="kv"><span>Clientes activos</span><b>${S.clients.length}</b></div>
+    </div></div>
+    <div class="card"><div class="sec-head"><h2>Los que más piden</h2><span class="count">esta semana</span></div><div class="hist">
+      ${byClient.map(x=>`<div class="kv"><span>${esc(x.c.name)}</span><b>${x.n}</b></div>`).join('')||'<p class="note">Aún no hay entregas esta semana.</p>'}
+    </div></div>
+  </section>`;
+}
+
+/* ---------- hojas (formularios) ---------- */
+const root=document.getElementById('sheet-root');
+function openSheet(html,mount){
+  root.innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true"><div class="grip"></div>${html}</div></div>`;
+  document.getElementById('scrim').addEventListener('click',e=>{if(e.target.id==='scrim')closeSheet()});
+  root.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeSheet));
+  mount&&mount(root);
+  const f=root.querySelector('input,select');f&&f.focus({preventScroll:true});
+}
+function closeSheet(){root.innerHTML=''}
+const stepper=(id,val)=>`<div class="stepper"><button type="button" data-step="-1" data-for="${id}" aria-label="Menos">−</button><input id="${id}" type="number" inputmode="numeric" min="0" value="${val}"><button type="button" data-step="1" data-for="${id}" aria-label="Más">+</button></div>`;
+function wireSteppers(r,onChange){r.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const i=r.querySelector('#'+b.dataset.for);i.value=Math.max(0,(+i.value||0)+ +b.dataset.step);onChange&&onChange()}));r.querySelectorAll('.stepper input').forEach(i=>i.addEventListener('input',()=>onChange&&onChange()))}
+
+function sheetEntregar(o){
+  const c=client(o.clientId);let paid=true;
+  openSheet(`<h2>Entregar a ${esc(c.name)}</h2><p class="sub">${esc(c.address)} · ${money(c.price)} por garrafón</p>
+    <form class="form" id="f">
+      <div class="field"><label for="q">Garrafones entregados</label>${stepper('q',o.qty)}</div>
+      <div class="field"><label for="r">Envases vacíos que recogí</label>${stepper('r',Math.min(o.qty,c.envases))}</div>
+      <div class="field"><label>¿Pagó?</label><div class="seg"><button type="button" data-pay="1" aria-pressed="true">Sí, pagó</button><button type="button" data-pay="0" aria-pressed="false">Fiado</button></div></div>
+      <div class="total-line"><span id="tl-label">Cobrar</span><b id="tl">${money(o.qty*c.price)}</b></div>
+      <p class="sub" id="env-note" style="margin:0"></p>
+      <button class="btn primary block" type="submit">${ICON.check}Confirmar entrega</button>
+    </form>`,r=>{
+      const upd=()=>{const q=+r.querySelector('#q').value||0,rr=+r.querySelector('#r').value||0;r.querySelector('#tl').textContent=money(q*c.price);r.querySelector('#tl-label').textContent=paid?'Cobrar':'Se suma a su cuenta';r.querySelector('#env-note').textContent=`Le quedarán ${Math.max(0,c.envases+q-rr)} envases nuestros.`};
+      wireSteppers(r,upd);upd();
+      r.querySelectorAll('[data-pay]').forEach(b=>b.addEventListener('click',()=>{paid=b.dataset.pay==='1';r.querySelectorAll('[data-pay]').forEach(x=>x.setAttribute('aria-pressed',x===b));upd()}));
+      r.querySelector('#f').addEventListener('submit',e=>{e.preventDefault();
+        const q=+r.querySelector('#q').value||0,rr=+r.querySelector('#r').value||0;if(!q){toast('Pon cuántos garrafones entregaste');return}
+        Object.assign(o,{qty:q,status:'entregado',date:TODAY,amount:q*c.price,paid,returned:rr});
+        c.envases=Math.max(0,c.envases+q-rr);if(!paid)c.debt+=q*c.price;
+        save();closeSheet();render();toast(paid?`Entregado · cobraste ${money(q*c.price)}`:`Entregado · fiado ${money(q*c.price)}`);
+      });
+    });
+}
+
+function sheetPedido(preId){
+  if(!S.clients.length){sheetCliente();return}
+  const opts=S.clients.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${c.id}" ${c.id===preId?'selected':''}>${esc(c.name)}</option>`).join('');
+  const first=preId?client(preId):S.clients.slice().sort((a,b)=>a.name.localeCompare(b.name))[0];
+  openSheet(`<h2>Nuevo pedido</h2><p class="sub">Se agrega a la ruta de hoy.</p>
+    <form class="form" id="f"><div class="field"><label for="cl">Cliente</label><select id="cl">${opts}</select></div>
+    <div class="field"><label for="q">Garrafones</label>${stepper('q',first.typical)}</div>
+    <button class="btn primary block" type="submit">${ICON.plus}Agregar a la ruta</button></form>`,r=>{
+      wireSteppers(r);
+      r.querySelector('#cl').addEventListener('change',e=>r.querySelector('#q').value=client(e.target.value).typical);
+      r.querySelector('#f').addEventListener('submit',e=>{e.preventDefault();const id=r.querySelector('#cl').value,q=+r.querySelector('#q').value||0;if(!q)return;
+        const ex=pendingFor(client(id));if(ex)ex.qty+=q;else S.orders.push({id:uid(),clientId:id,qty:q,date:TODAY,status:'pendiente'});
+        save();closeSheet();tab='hoy';render();toast('Pedido agregado a la ruta');});
+    });
+}
+
+function sheetAbono(c){
+  openSheet(`<h2>Pago de ${esc(c.name)}</h2><p class="sub">Debe ${money(c.debt)}</p>
+    <form class="form" id="f"><div class="field"><label for="a">Cantidad que pagó</label><input id="a" type="number" inputmode="numeric" min="1" value="${c.debt}"></div>
+    <button class="btn primary block" type="submit">Registrar pago</button></form>`,r=>{
+      r.querySelector('#f').addEventListener('submit',e=>{e.preventDefault();const a=Math.min(+r.querySelector('#a').value||0,c.debt);if(a<=0)return;
+        S.payments.push({id:uid(),clientId:c.id,amount:a,date:TODAY});c.debt-=a;save();closeSheet();render();toast(c.debt?`Abono de ${money(a)} · le queda ${money(c.debt)}`:'Cuenta liquidada');});
+    });
+}
+
+function sheetCliente(c){
+  const isNew=!c;c=c||{name:'',type:'negocio',phone:'',address:'',price:30,freq:7,typical:2,envases:0,debt:0,notes:''};
+  openSheet(`<h2>${isNew?'Nuevo cliente':'Editar cliente'}</h2>
+    <form class="form" id="f">
+      <div class="field"><label for="n">Nombre</label><input id="n" required value="${esc(c.name)}" placeholder="Ej. Tienda La Güera"></div>
+      <div class="two"><div class="field"><label for="t">Tipo</label><select id="t"><option value="negocio" ${c.type==='negocio'?'selected':''}>Negocio</option><option value="casa" ${c.type==='casa'?'selected':''}>Casa</option></select></div>
+      <div class="field"><label for="ph">WhatsApp</label><input id="ph" inputmode="tel" value="${esc(c.phone)}" placeholder="10 dígitos"></div></div>
+      <div class="field"><label for="ad">Dirección</label><input id="ad" value="${esc(c.address)}" placeholder="Calle, número, colonia"></div>
+      <div class="two"><div class="field"><label for="pr">Precio por garrafón</label><input id="pr" type="number" inputmode="numeric" value="${c.price}"></div>
+      <div class="field"><label for="fq">Pide cada (días)</label><input id="fq" type="number" inputmode="numeric" value="${c.freq}"></div></div>
+      <div class="two"><div class="field"><label for="ty">Garrafones usuales</label><input id="ty" type="number" inputmode="numeric" value="${c.typical}"></div>
+      <div class="field"><label for="ev">Envases que tiene</label><input id="ev" type="number" inputmode="numeric" value="${c.envases}"></div></div>
+      <div class="field"><label for="no">Notas</label><input id="no" value="${esc(c.notes)}" placeholder="Ej. dejar con el encargado"></div>
+      <button class="btn primary block" type="submit">${isNew?'Guardar cliente':'Guardar cambios'}</button>
+    </form>`,r=>{
+      r.querySelector('#f').addEventListener('submit',e=>{e.preventDefault();const v=id=>r.querySelector('#'+id).value.trim();
+        Object.assign(c,{name:v('n'),type:v('t'),phone:v('ph'),address:v('ad'),price:+v('pr')||0,freq:Math.max(1,+v('fq')||7),typical:Math.max(1,+v('ty')||1),envases:+v('ev')||0,notes:v('no')});
+        if(isNew){c.id=uid();S.clients.push(c)}save();closeSheet();render();toast(isNew?'Cliente guardado':'Cambios guardados');});
+    });
+}
+
+function sheetDetalle(c){
+  const hist=S.orders.filter(o=>o.clientId===c.id&&o.status==='entregado').sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+  const nd=nextDue(c),d=diff(nd,TODAY);
+  openSheet(`<h2>${esc(c.name)}</h2><p class="sub">${esc(c.address)}<br>Tel. ${esc(c.phone)}${c.notes?'<br>'+esc(c.notes):''}</p>
+    <div class="stats" style="margin-bottom:14px"><div class="stat"><b>${c.envases}</b><span>envases suyos</span></div>
+    <div class="stat"><b style="${c.debt?'color:var(--danger)':''}">${money(c.debt)}</b><span>debe</span></div>
+    <div class="stat"><b>${d<=0?'Hoy':d+' d'}</b><span>próximo pedido</span></div></div>
+    <div class="actions" style="margin-bottom:14px">${clientActions(c,{msg:`Hola, buen día. ¿Le llevamos sus ${c.typical} garrafones de agua? 💧`})}</div>
+    <div class="form"><button class="btn primary block" type="button" id="d-ped">${ICON.plus}Agregar pedido para hoy</button>
+    ${c.debt?'<button class="btn block" type="button" id="d-abo">Registrar pago</button>':''}
+    <button class="btn block" type="button" id="d-edit">Editar datos</button></div>
+    <div class="sec-head" style="margin-top:18px"><h2>Últimas entregas</h2></div>
+    <div class="hist">${hist.map(o=>`<div class="kv"><span>${fmtDay(o.date,{weekday:'short',day:'numeric',month:'short'})} · ${o.qty} garrafones</span><b style="color:${o.paid?'var(--ok)':'var(--danger)'}">${o.paid?'Pagó':'Fiado'} ${money(o.amount)}</b></div>`).join('')||'<p class="sub">Aún no hay entregas.</p>'}</div>`,r=>{
+      r.querySelector('#d-ped').addEventListener('click',()=>sheetPedido(c.id));
+      r.querySelector('#d-abo')?.addEventListener('click',()=>sheetAbono(c));
+      r.querySelector('#d-edit').addEventListener('click',()=>sheetCliente(c));
+    });
+}
+
+function backup(){
+  const name='respaldo-garrafones-'+TODAY+'.json';
+  const blob=new Blob([JSON.stringify(S)],{type:'application/json'});
+  const done=()=>{S.lastBackup=TODAY;save();closeSheet();toast('Respaldo listo')};
+  try{
+    const file=new File([blob],name,{type:'application/json'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Respaldo de garrafones'}).then(done).catch(()=>{});return}
+  }catch(e){}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);done();
+}
+function restore(file){
+  const fr=new FileReader();
+  fr.onload=()=>{try{const d=JSON.parse(fr.result);if(!Array.isArray(d.clients)||!Array.isArray(d.orders))throw 0;d.payments=d.payments||[];S=d;save();closeSheet();tab='hoy';render();toast(`Restaurado: ${d.clients.length} clientes`)}catch(e){toast('Ese archivo no es un respaldo de esta app')}};
+  fr.readAsText(file);
+}
+function sheetAjustes(){
+  const lb=S.lastBackup?diff(TODAY,S.lastBackup):null;
+  openSheet(`<h2>Ajustes</h2>
+    <p class="sub">Tus datos se guardan en este celular. Haz un respaldo cada semana y mándatelo por WhatsApp o guárdalo en Drive.</p>
+    <p class="note ${lb===null||lb>7?'warn':''}" style="margin-bottom:12px">${lb===null?'Todavía no has hecho ningún respaldo.':lb===0?'Último respaldo: hoy.':`Último respaldo: hace ${lb} ${lb===1?'día':'días'}.`}</p>
+    <div class="form">
+      <button class="btn primary block" type="button" id="bk">Respaldar mis datos</button>
+      <label class="btn block" for="rs-file" style="cursor:pointer">Restaurar desde un respaldo</label>
+      <input id="rs-file" type="file" accept=".json,application/json" hidden>
+      ${S.demo?'<button class="btn block" type="button" id="clr">Quitar datos de ejemplo y empezar con mis clientes</button>':''}
+      <button class="btn block" type="button" id="wipe" style="color:var(--danger)">Borrar todo</button>
+      <div id="wipe-confirm" hidden class="form"><p class="note warn">Se borran todos los clientes, entregas y cobros de este celular. Haz un respaldo antes si los quieres conservar.</p>
+      <button class="btn danger block" type="button" id="wipe-yes">Sí, borrar todo</button></div>
+    </div>`,r=>{
+      r.querySelector('#bk').addEventListener('click',backup);
+      r.querySelector('#rs-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)restore(f)});
+      r.querySelector('#clr')?.addEventListener('click',()=>{S={clients:[],orders:[],payments:[],demo:false};save();closeSheet();tab='hoy';render();toast('Listo, empieza con tus clientes')});
+      r.querySelector('#wipe').addEventListener('click',()=>{r.querySelector('#wipe-confirm').hidden=false});
+      r.querySelector('#wipe-yes').addEventListener('click',()=>{S={clients:[],orders:[],payments:[],demo:false};save();closeSheet();tab='hoy';render();toast('Datos borrados')});
+    });
+}
+
+/* ---------- eventos ---------- */
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;render();window.scrollTo(0,0)}));
+document.getElementById('fab').addEventListener('click',()=>tab==='clientes'?sheetCliente():sheetPedido());
+document.getElementById('demo-chip').addEventListener('click',sheetAjustes);
+document.getElementById('gear').addEventListener('click',sheetAjustes);
+main.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;const id=b.dataset.id;
+  if(b.dataset.act==='entregar')sheetEntregar(S.orders.find(o=>o.id===id));
+  if(b.dataset.act==='add-route'){const c=client(id);S.orders.push({id:uid(),clientId:id,qty:c.typical,date:TODAY,status:'pendiente'});save();render();toast(`${c.name} agregado a la ruta`)}
+  if(b.dataset.act==='client')sheetDetalle(client(id));
+  if(b.dataset.act==='abono')sheetAbono(client(id));
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+render();
+</script>
+</body>
+</html>
